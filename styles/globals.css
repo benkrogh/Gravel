@@ -71,3 +71,37 @@
     background-color: var(--color-bg-default);
   }
 }
+
+@layer utilities {
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbars on all scroll containers within mobile prototypes */
+  .mobile-prototype,
+  .mobile-prototype * {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .mobile-prototype *::-webkit-scrollbar {
+    display: none;
+  }
+
+  html:has(.mobile-prototype),
+  body:has(.mobile-prototype) {
+    -ms-overflow-style: none;
+    overflow: hidden;
+    scrollbar-width: none;
+  }
+
+  html:has(.mobile-prototype)::-webkit-scrollbar,
+  body:has(.mobile-prototype)::-webkit-scrollbar {
+    display: none;
+  }
+}

@@ -2,31 +2,9 @@
 
 import useEmblaCarousel from "embla-carousel-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-
-const bids = [
-  {
-    id: "1",
-    title: "Bathroom Remodel",
-    range: "$12 – 17k",
-    image:
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "2",
-    title: "Deck & Porch",
-    range: "$8 – 12k",
-    image:
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "3",
-    title: "Kitchen Refresh",
-    range: "$15 – 22k",
-    image:
-      "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80",
-  },
-];
+import { useEffect, useRef, useState } from "react";
+import { BidDetailSheet } from "./bid-detail-sheet";
+import { bids, type Bid } from "./bid-data";
 
 export function BidsSection() {
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -36,6 +14,8 @@ export function BidsSection() {
     skipSnaps: false,
   });
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [activeBid, setActiveBid] = useState<Bid | null>(null);
+  const dragState = useRef({ x: 0, y: 0, dragging: false });
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -53,53 +33,85 @@ export function BidsSection() {
     };
   }, [emblaApi]);
 
-  return (
-    <section className="mt-8">
-      <h2 className="px-4 text-lg font-semibold text-text-primary">Bids</h2>
+  const handlePointerDown = (event: React.PointerEvent) => {
+    dragState.current = {
+      x: event.clientX,
+      y: event.clientY,
+      dragging: false,
+    };
+  };
 
-      <div
-        className="mt-4 overflow-hidden touch-pan-x overscroll-x-contain"
-        ref={emblaRef}
-      >
-        <div className="flex gap-3 pl-4 pr-4">
-          {bids.map((bid) => (
-            <article
+  const handlePointerMove = (event: React.PointerEvent) => {
+    const deltaX = Math.abs(event.clientX - dragState.current.x);
+    const deltaY = Math.abs(event.clientY - dragState.current.y);
+    if (deltaX > 6 || deltaY > 6) {
+      dragState.current.dragging = true;
+    }
+  };
+
+  const handleBidTap = (bid: Bid) => {
+    if (!dragState.current.dragging) {
+      setActiveBid(bid);
+    }
+  };
+
+  return (
+    <>
+      <section className="mt-8">
+        <h2 className="px-4 text-lg font-semibold text-text-primary">Bids</h2>
+
+        <div
+          className="mt-4 overflow-hidden touch-pan-x overscroll-x-contain"
+          ref={emblaRef}
+          onPointerMove={handlePointerMove}
+        >
+          <div className="flex gap-3 pl-4 pr-4">
+            {bids.map((bid) => (
+              <button
+                key={bid.id}
+                type="button"
+                onPointerDown={handlePointerDown}
+                onClick={() => handleBidTap(bid)}
+                className="relative h-44 w-[17.5rem] shrink-0 grow-0 basis-[17.5rem] cursor-grab overflow-hidden rounded-3xl text-left active:cursor-grabbing"
+              >
+                <Image
+                  src={bid.image}
+                  alt={bid.title}
+                  fill
+                  draggable={false}
+                  className="pointer-events-none object-cover select-none"
+                  sizes="280px"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                <div className="pointer-events-none absolute bottom-0 left-0 p-4">
+                  <p className="font-semibold text-white">{bid.title}</p>
+                  <p className="mt-0.5 text-sm text-white/80">{bid.range}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-3 flex justify-center gap-1.5">
+          {bids.map((bid, index) => (
+            <button
               key={bid.id}
-              className="relative h-44 w-[17.5rem] shrink-0 grow-0 basis-[17.5rem] cursor-grab overflow-hidden rounded-3xl active:cursor-grabbing"
-            >
-              <Image
-                src={bid.image}
-                alt={bid.title}
-                fill
-                draggable={false}
-                className="pointer-events-none object-cover select-none"
-                sizes="280px"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-              <div className="pointer-events-none absolute bottom-0 left-0 p-4">
-                <p className="font-semibold text-white">{bid.title}</p>
-                <p className="mt-0.5 text-sm text-white/80">{bid.range}</p>
-              </div>
-            </article>
+              type="button"
+              aria-label={`Go to ${bid.title}`}
+              onClick={() => emblaApi?.scrollTo(index)}
+              className={`h-1.5 rounded-full transition-all duration-200 ${
+                index === selectedIndex
+                  ? "w-5 bg-brand-primary"
+                  : "w-1.5 bg-neutral-300"
+              }`}
+            />
           ))}
         </div>
-      </div>
+      </section>
 
-      <div className="mt-3 flex justify-center gap-1.5">
-        {bids.map((bid, index) => (
-          <button
-            key={bid.id}
-            type="button"
-            aria-label={`Go to ${bid.title}`}
-            onClick={() => emblaApi?.scrollTo(index)}
-            className={`h-1.5 rounded-full transition-all duration-200 ${
-              index === selectedIndex
-                ? "w-5 bg-brand-primary"
-                : "w-1.5 bg-neutral-300"
-            }`}
-          />
-        ))}
-      </div>
-    </section>
+      {activeBid && (
+        <BidDetailSheet bid={activeBid} onClose={() => setActiveBid(null)} />
+      )}
+    </>
   );
 }
