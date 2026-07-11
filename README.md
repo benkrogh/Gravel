@@ -34,9 +34,12 @@ lib/
 
 ## Adding a prototype
 
+Mobile prototypes are built for embedding in an external viewer that provides its own device frame. Render full-bleed content — do not wrap in a mock phone shell.
+
 1. Create a folder at `app/prototypes/your-slug/page.tsx`
-2. Add an entry to `app/prototypes/registry.ts`
-3. Build your design using the shared tokens in `styles/tokens.css`
+2. Wrap with `MobilePrototype` via a route `layout.tsx` (see `app/prototypes/dashboard/`)
+3. Add an entry to `app/prototypes/registry.ts`
+4. Build your design using the shared tokens in `styles/tokens.css`
 
 ## Design tokens
 

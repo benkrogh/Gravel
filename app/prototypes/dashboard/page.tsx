@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { BottomNav } from "./bottom-nav";
 import { BudgetCard } from "./budget-card";
 import { BidsSection } from "./bids-section";
@@ -13,16 +12,9 @@ function getGreeting(): string {
 
 export default function DashboardPrototype() {
   return (
-    <div className="flex min-h-screen items-start justify-center bg-neutral-200 py-8">
-      <div className="relative flex h-[844px] w-[390px] flex-col overflow-hidden rounded-[3rem] bg-bg-default shadow-lg ring-1 ring-black/5">
-        <Link
-          href="/"
-          className="absolute left-5 top-4 z-20 text-xs text-text-tertiary hover:text-text-secondary"
-        >
-          ← Prototypes
-        </Link>
-
-        <main className="flex-1 overflow-y-auto px-6 pb-28 pt-14">
+    <>
+      <main className="flex-1 overflow-y-auto pb-28 pt-[max(3.5rem,env(safe-area-inset-top,0px))]">
+        <div className="px-4">
           <h1 className="text-[2rem] font-semibold leading-tight tracking-tight text-text-primary">
             {getGreeting()}, Jay!
           </h1>
@@ -30,12 +22,13 @@ export default function DashboardPrototype() {
           <div className="mt-8 space-y-8">
             <CrewSection />
             <BudgetCard />
-            <BidsSection />
           </div>
-        </main>
+        </div>
 
-        <BottomNav />
-      </div>
-    </div>
+        <BidsSection />
+      </main>
+
+      <BottomNav />
+    </>
   );
 }

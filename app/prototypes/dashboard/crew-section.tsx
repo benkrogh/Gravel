@@ -9,7 +9,7 @@ export function CrewSection() {
   return (
     <section>
       <h2 className="text-lg font-semibold text-text-primary">Crew</h2>
-      <div className="mt-4 flex gap-4 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="mt-4 flex gap-4 overflow-x-auto overscroll-x-contain pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {crew.map((member) => (
           <button
             key={member.id}
