@@ -15,6 +15,11 @@ export const prototypes: Prototype[] = [
     description: "Mobile home screen — budget, crew, bids, and navigation",
   },
   {
+    slug: "marketing",
+    title: "Marketing Website",
+    description: "Public landing page — cost tracking, bids, crew, and billpay",
+  },
+  {
     slug: "example",
     title: "Example",
     description: "Starter template showing the design system in use",

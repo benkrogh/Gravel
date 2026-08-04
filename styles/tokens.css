@@ -9,6 +9,10 @@
   --color-brand-secondary: #5e8d27;
   --color-brand-accent: #e6f4d7;
 
+  /* ── CTA (marketing) ──────────────────────────────────────── */
+  --color-cta: #030403;
+  --color-cta-hover: #1c1d1b;
+
   /* ── Neutrals ────────────────────────────────────────────── */
   --color-neutral-0: #ffffff;
   --color-neutral-50: #f7f7f7;

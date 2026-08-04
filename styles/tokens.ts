@@ -14,6 +14,12 @@ export const colors = {
     secondary: "var(--color-brand-secondary)",
   },
 
+  // CTA (marketing)
+  cta: {
+    default: "var(--color-cta)",
+    hover: "var(--color-cta-hover)",
+  },
+
   // Neutrals
   neutral: {
     0: "var(--color-neutral-0)",

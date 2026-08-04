@@ -7,6 +7,8 @@
   --color-brand-primary-hover: var(--color-brand-primary-hover);
   --color-brand-secondary: var(--color-brand-secondary);
   --color-brand-accent: var(--color-brand-accent);
+  --color-cta: var(--color-cta);
+  --color-cta-hover: var(--color-cta-hover);
 
   --color-neutral-0: var(--color-neutral-0);
   --color-neutral-50: var(--color-neutral-50);
