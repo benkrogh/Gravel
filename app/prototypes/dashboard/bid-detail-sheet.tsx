@@ -119,7 +119,7 @@ export function BidDetailSheet({ bid, onClose }: BidDetailSheetProps) {
         <div className="shrink-0 border-t border-border-default bg-bg-default px-4 pb-[max(1rem,env(safe-area-inset-bottom,0px))] pt-4">
           <button
             type="button"
-            className="w-full rounded-2xl bg-brand-primary py-4 text-base font-semibold text-white transition-colors hover:bg-brand-primary-hover active:scale-[0.98]"
+            className="w-full rounded-2xl bg-cta py-4 text-base font-semibold text-white transition-colors hover:bg-cta-hover active:scale-[0.98]"
           >
             Start bid
           </button>

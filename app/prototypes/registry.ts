@@ -20,6 +20,12 @@ export const prototypes: Prototype[] = [
     description: "Public landing page — cost tracking, bids, crew, and billpay",
   },
   {
+    slug: "scheduling",
+    title: "Crew Schedule",
+    description:
+      "Week calendar of jobsites — click in for staffing health and day profit margin",
+  },
+  {
     slug: "example",
     title: "Example",
     description: "Starter template showing the design system in use",

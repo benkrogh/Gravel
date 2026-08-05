@@ -1,9 +1,9 @@
+import type { Icon } from "@phosphor-icons/react";
 import {
   ChartLineUp,
   ClipboardText,
   HardHat,
   Wallet,
-  type Icon,
 } from "@phosphor-icons/react/dist/ssr";
 
 const valueProps: {
