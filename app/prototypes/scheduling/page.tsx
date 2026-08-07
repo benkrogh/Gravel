@@ -6,19 +6,21 @@ import { DayJobs } from "./day-jobs";
 import { DayStrip } from "./day-strip";
 import { JobDetailSheet } from "./job-detail-sheet";
 import {
+  TODAY,
   WEEK_START,
-  formatDayNumber,
   formatWeekday,
   getJobDay,
   getStaffingHealth,
   getWeekDates,
   jobs,
   parseDate,
+  shiftWeek,
+  startOfWeek,
   type StaffingHealth,
 } from "./schedule-data";
 
-const dates = getWeekDates(WEEK_START);
-const TODAY = "2026-08-03";
+const MIN_WEEK = shiftWeek(WEEK_START, -2);
+const MAX_WEEK = shiftWeek(WEEK_START, 2);
 
 function dayCounts(date: string) {
   const counts: Record<StaffingHealth, number> = {
@@ -37,9 +39,11 @@ function dayCounts(date: string) {
 }
 
 export default function SchedulingPrototype() {
+  const [weekStart, setWeekStart] = useState(WEEK_START);
   const [selectedDate, setSelectedDate] = useState(TODAY);
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 
+  const dates = getWeekDates(weekStart);
   const selectedJob = jobs.find((j) => j.id === selectedJobId) ?? null;
   const counts = dayCounts(selectedDate);
   const dateObj = parseDate(selectedDate);
@@ -50,9 +54,23 @@ export default function SchedulingPrototype() {
   });
   const isToday = selectedDate === TODAY;
 
+  function moveWeek(delta: number) {
+    const next = shiftWeek(weekStart, delta);
+    if (next < MIN_WEEK || next > MAX_WEEK) return;
+    setWeekStart(next);
+    const weekdayOffset = dates.indexOf(selectedDate);
+    const nextDates = getWeekDates(next);
+    setSelectedDate(nextDates[weekdayOffset >= 0 ? weekdayOffset : 0]);
+  }
+
+  function handleSelectDate(date: string) {
+    setSelectedDate(date);
+    setWeekStart(startOfWeek(date));
+  }
+
   function handleSelect(jobId: string, date: string) {
     setSelectedJobId(jobId);
-    setSelectedDate(date);
+    handleSelectDate(date);
   }
 
   return (
@@ -71,11 +89,15 @@ export default function SchedulingPrototype() {
           <DayStrip
             dates={dates}
             selectedDate={selectedDate}
-            onSelectDate={setSelectedDate}
+            onSelectDate={handleSelectDate}
+            onPrevWeek={() => moveWeek(-1)}
+            onNextWeek={() => moveWeek(1)}
+            canPrevWeek={weekStart > MIN_WEEK}
+            canNextWeek={weekStart < MAX_WEEK}
           />
         </div>
 
-        <div className="mt-5 px-4">
+        <div className="mt-2 px-4">
           <div className="flex items-end justify-between gap-3">
             <div>
               <h2 className="text-lg font-semibold text-text-primary">
@@ -112,10 +134,6 @@ export default function SchedulingPrototype() {
         >
           <DayJobs date={selectedDate} jobs={jobs} onSelect={handleSelect} />
         </div>
-
-        <p className="mt-6 px-4 text-center text-xs text-text-tertiary">
-          Week of Aug {formatDayNumber(dates[0])}–{formatDayNumber(dates[6])}
-        </p>
       </main>
 
       <BottomNav active="jobs" />
@@ -126,7 +144,7 @@ export default function SchedulingPrototype() {
           job={selectedJob}
           date={selectedDate}
           onClose={() => setSelectedJobId(null)}
-          onSelectDate={setSelectedDate}
+          onSelectDate={handleSelectDate}
         />
       ) : null}
     </>

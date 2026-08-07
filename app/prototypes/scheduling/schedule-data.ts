@@ -38,6 +38,7 @@ export interface Job {
 
 /** Week of Mon Aug 3 – Sun Aug 9, 2026 */
 export const WEEK_START = "2026-08-03";
+export const TODAY = "2026-08-03";
 
 export const jobs: Job[] = [
   {
@@ -176,7 +177,7 @@ export const jobs: Job[] = [
     address: "400 SE Mill St, Portland, OR",
     color: "#737373",
     startDate: "2026-08-06",
-    endDate: "2026-08-09",
+    endDate: "2026-08-12",
     days: [
       day("2026-08-06", 6, [
         crew("luis", "Luis A.", "Lead", "LA", 410),
@@ -206,6 +207,25 @@ export const jobs: Job[] = [
         crew("zoe", "Zoe F.", "Apprentice", "ZF", 210),
       ], [
         sub("polish", "Polish Floors Co.", "Concrete polish", 1, 900, 1400),
+      ]),
+      day("2026-08-10", 3, [
+        crew("luis", "Luis A.", "Lead", "LA", 410),
+        crew("kim", "Kim J.", "Carpenter", "KJ", 330),
+        crew("ben", "Ben R.", "Carpenter", "BR", 330),
+      ], [
+        sub("polish", "Polish Floors Co.", "Punch list", 1, 700, 1100),
+      ]),
+      day("2026-08-11", 2, [
+        crew("luis", "Luis A.", "Lead", "LA", 410),
+        crew("kim", "Kim J.", "Carpenter", "KJ", 330),
+      ], [
+        sub("lumen", "Lumen Electric", "Final devices", 1, 650, 980),
+      ]),
+      day("2026-08-12", 2, [
+        crew("luis", "Luis A.", "Lead", "LA", 410),
+        crew("zoe", "Zoe F.", "Apprentice", "ZF", 210),
+      ], [
+        sub("polish", "Polish Floors Co.", "Walkthrough", 1, 500, 800),
       ]),
     ],
   },
@@ -301,6 +321,36 @@ export function formatWeekday(iso: string): string {
 
 export function formatDayNumber(iso: string): string {
   return String(parseDate(iso).getDate());
+}
+
+export function formatMonthYear(iso: string): string {
+  return parseDate(iso).toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+  });
+}
+
+export function formatMonth(iso: string): string {
+  return parseDate(iso).toLocaleDateString("en-US", { month: "long" });
+}
+
+/** Monday-start week containing the given date. */
+export function startOfWeek(iso: string): string {
+  const date = parseDate(iso);
+  const day = date.getDay(); // 0 Sun … 6 Sat
+  const offset = day === 0 ? -6 : 1 - day;
+  date.setDate(date.getDate() + offset);
+  return formatDate(date);
+}
+
+export function addDays(iso: string, days: number): string {
+  const date = parseDate(iso);
+  date.setDate(date.getDate() + days);
+  return formatDate(date);
+}
+
+export function shiftWeek(weekStart: string, weeks: number): string {
+  return addDays(weekStart, weeks * 7);
 }
 
 export function formatCurrency(amount: number): string {

@@ -73,54 +73,47 @@ export function DayJobs({ date, jobs, onSelect }: DayJobsProps) {
             <button
               type="button"
               onClick={() => onSelect(job.id, date)}
-              className="group flex w-full items-stretch overflow-hidden rounded-3xl border border-neutral-200/80 bg-bg-elevated text-left shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-transform duration-150 active:scale-[0.98]"
+              className="group w-full rounded-3xl border border-neutral-200/80 bg-bg-elevated px-4 py-4 text-left shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-transform duration-150 active:scale-[0.98]"
             >
-              <span
-                className="w-1.5 shrink-0"
-                style={{ backgroundColor: job.color }}
-                aria-hidden
-              />
-              <div className="min-w-0 flex-1 px-4 py-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="truncate text-[17px] font-semibold tracking-tight text-text-primary">
-                      {job.name}
-                    </p>
-                    <p className="mt-0.5 truncate text-sm text-text-secondary">
-                      {job.client}
-                    </p>
-                  </div>
-                  <CaretRight
-                    size={16}
-                    weight="bold"
-                    className="mt-1 shrink-0 text-neutral-300 transition-colors group-active:text-neutral-400"
-                  />
-                </div>
-
-                <div className="mt-3 flex flex-wrap items-center gap-2">
-                  <span
-                    className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${meta.className}`}
-                  >
-                    {meta.label}
-                  </span>
-                  <span className="text-xs text-text-tertiary">
-                    {filled}/{day.requiredHeadcount} on site
-                  </span>
-                </div>
-
-                <div className="mt-3 flex items-end justify-between gap-3 border-t border-neutral-100 pt-3">
-                  <div>
-                    <p className="text-[11px] font-medium uppercase tracking-wide text-text-tertiary">
-                      Day margin
-                    </p>
-                    <p className="mt-0.5 text-lg font-semibold tabular-nums text-text-primary">
-                      {formatPercent(economics.margin)}
-                    </p>
-                  </div>
-                  <p className="text-sm tabular-nums text-text-secondary">
-                    {formatCurrency(economics.profit)} profit
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="truncate text-[17px] font-semibold tracking-tight text-text-primary">
+                    {job.name}
+                  </p>
+                  <p className="mt-0.5 truncate text-sm text-text-secondary">
+                    {job.client}
                   </p>
                 </div>
+                <CaretRight
+                  size={16}
+                  weight="bold"
+                  className="mt-1 shrink-0 text-neutral-300 transition-colors group-active:text-neutral-400"
+                />
+              </div>
+
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span
+                  className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${meta.className}`}
+                >
+                  {meta.label}
+                </span>
+                <span className="text-xs text-text-tertiary">
+                  {filled}/{day.requiredHeadcount} on site
+                </span>
+              </div>
+
+              <div className="mt-3 flex items-end justify-between gap-3 border-t border-neutral-100 pt-3">
+                <div>
+                  <p className="text-[11px] font-medium uppercase tracking-wide text-text-tertiary">
+                    Day margin
+                  </p>
+                  <p className="mt-0.5 text-lg font-semibold tabular-nums text-text-primary">
+                    {formatPercent(economics.margin)}
+                  </p>
+                </div>
+                <p className="text-sm tabular-nums text-text-secondary">
+                  {formatCurrency(economics.profit)} profit
+                </p>
               </div>
             </button>
           </li>

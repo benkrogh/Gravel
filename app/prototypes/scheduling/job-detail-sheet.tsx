@@ -1,15 +1,19 @@
 "use client";
 
-import { X } from "@phosphor-icons/react";
+import { CaretLeft, CaretRight, X } from "@phosphor-icons/react";
 import { useCallback, useEffect, useState } from "react";
 import {
   formatCurrency,
   formatDayNumber,
+  formatMonthYear,
   formatPercent,
   formatWeekday,
   getDayEconomics,
   getStaffingHealth,
+  getWeekDates,
+  shiftWeek,
   staffingHeadcount,
+  startOfWeek,
   type Job,
   type StaffingHealth,
 } from "./schedule-data";
@@ -96,6 +100,28 @@ export function JobDetailSheet({
         ? "text-status-warning"
         : "text-status-error";
 
+  const weekStart = startOfWeek(date);
+  const weekDates = getWeekDates(weekStart);
+  const weekDays = job.days.filter((d) => weekDates.includes(d.date));
+  const jobWeekStarts = [
+    ...new Set(job.days.map((d) => startOfWeek(d.date))),
+  ].sort();
+  const weekIndex = jobWeekStarts.indexOf(weekStart);
+  const canPrevWeek = weekIndex > 0;
+  const canNextWeek = weekIndex >= 0 && weekIndex < jobWeekStarts.length - 1;
+  const monthLabel = formatMonthYear(date);
+
+  function moveWeek(delta: number) {
+    if (delta < 0 && !canPrevWeek) return;
+    if (delta > 0 && !canNextWeek) return;
+    const nextWeek = shiftWeek(weekStart, delta);
+    const nextDates = getWeekDates(nextWeek);
+    const nextDay =
+      job.days.find((d) => nextDates.includes(d.date)) ??
+      job.days.find((d) => startOfWeek(d.date) === nextWeek);
+    if (nextDay) onSelectDate(nextDay.date);
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex flex-col justify-end">
       <button
@@ -125,16 +151,9 @@ export function JobDetailSheet({
         <header className="shrink-0 px-5 pb-3 pt-3">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <span
-                  className="size-2.5 shrink-0 rounded-full"
-                  style={{ backgroundColor: job.color }}
-                  aria-hidden
-                />
-                <p className="truncate text-xs font-medium uppercase tracking-wide text-text-tertiary">
-                  {job.client}
-                </p>
-              </div>
+              <p className="truncate text-xs font-medium uppercase tracking-wide text-text-tertiary">
+                {job.client}
+              </p>
               <h2
                 id="job-detail-title"
                 className="mt-1 text-[1.65rem] font-semibold leading-tight tracking-tight text-text-primary"
@@ -153,33 +172,61 @@ export function JobDetailSheet({
             </button>
           </div>
 
-          <div className="mt-4 flex gap-2 overflow-x-auto pb-0.5">
-            {job.days.map((d) => {
-              const active = d.date === date;
-              return (
-                <button
-                  key={d.date}
-                  type="button"
-                  onClick={() => onSelectDate(d.date)}
-                  className={`shrink-0 rounded-2xl px-3.5 py-2 text-left transition-all duration-200 active:scale-95 ${
-                    active
-                      ? "bg-cta text-white shadow-[0_4px_12px_rgba(3,4,3,0.22)]"
-                      : "bg-neutral-100 text-text-secondary"
-                  }`}
-                >
-                  <span
-                    className={`block text-[11px] font-medium uppercase ${
-                      active ? "text-white/70" : "text-text-tertiary"
-                    }`}
-                  >
-                    {formatWeekday(d.date)}
-                  </span>
-                  <span className="block text-[15px] font-semibold tabular-nums">
-                    {formatDayNumber(d.date)}
-                  </span>
-                </button>
-              );
-            })}
+          <div className="mt-4">
+            <p className="mb-3 text-[15px] font-semibold tracking-tight text-text-primary">
+              {monthLabel}
+            </p>
+
+            <div className="-mb-1 flex items-center gap-1.5 pb-3">
+              <button
+                type="button"
+                aria-label="Previous week"
+                onClick={() => moveWeek(-1)}
+                disabled={!canPrevWeek}
+                className="flex size-8 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-text-primary transition-transform active:scale-95 disabled:opacity-30"
+              >
+                <CaretLeft size={16} weight="bold" />
+              </button>
+
+              <div className="flex min-w-0 flex-1 gap-2 overflow-x-auto">
+                {weekDays.map((d) => {
+                  const active = d.date === date;
+                  return (
+                    <button
+                      key={d.date}
+                      type="button"
+                      onClick={() => onSelectDate(d.date)}
+                      className={`shrink-0 rounded-2xl px-3.5 py-2 text-left transition-all duration-200 active:scale-95 ${
+                        active
+                          ? "bg-cta text-white shadow-[0_4px_12px_rgba(3,4,3,0.22)]"
+                          : "bg-neutral-100 text-text-secondary"
+                      }`}
+                    >
+                      <span
+                        className={`block text-[11px] font-medium uppercase ${
+                          active ? "text-white/70" : "text-text-tertiary"
+                        }`}
+                      >
+                        {formatWeekday(d.date)}
+                      </span>
+                      <span className="block text-[15px] font-semibold tabular-nums">
+                        {formatDayNumber(d.date)}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                type="button"
+                aria-label="Next week"
+                onClick={() => moveWeek(1)}
+                disabled={!canNextWeek}
+                className="flex size-8 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-text-primary transition-transform active:scale-95 disabled:opacity-30"
+              >
+                <CaretRight size={16} weight="bold" />
+              </button>
+            </div>
           </div>
         </header>
 
