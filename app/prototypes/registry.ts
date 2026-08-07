@@ -26,6 +26,12 @@ export const prototypes: Prototype[] = [
       "Week calendar of jobsites — click in for staffing health and day profit margin",
   },
   {
+    slug: "billing",
+    title: "Billing & Invoices",
+    description:
+      "Mobile invoicing — outstanding balances, line items, and payment status for contract work",
+  },
+  {
     slug: "example",
     title: "Example",
     description: "Starter template showing the design system in use",
