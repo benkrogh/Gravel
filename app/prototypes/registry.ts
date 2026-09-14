@@ -32,6 +32,12 @@ export const prototypes: Prototype[] = [
       "Mobile invoicing — outstanding balances, line items, and payment status for contract work",
   },
   {
+    slug: "calculator",
+    title: "Project Profitability",
+    description:
+      "Internal cost-plus calculator — price labor, materials, and subs against a client budget",
+  },
+  {
     slug: "example",
     title: "Example",
     description: "Starter template showing the design system in use",
